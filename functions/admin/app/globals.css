@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+/* Configure dark mode to use class instead of media query */
+@variant dark (.dark &);
+
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0f172a;
+  --muted: #94a3b8;
+}
+
+/* Force dark mode by default */
+html {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+}
+
+.admin-scrollbar {
+  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+
+.admin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(16, 185, 129, 0.35);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+}
+
+/* Dropdown scrollbar - only shows when needed, doesn't reserve space */
+.dropdown-scrollbar {
+  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
+  scrollbar-width: thin;
+  scrollbar-gutter: auto;
+}
+
+.dropdown-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(16, 185, 129, 0.35);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+/* Remove Recharts default background and border */
+.recharts-wrapper,
+.recharts-surface {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.chart-container .recharts-wrapper,
+.chart-container .recharts-surface,
+.chart-container svg {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+}
