@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../controllers/emi_controllers.dart';
-import '../controllers/lock_controllers.dart';
-import '../models/emi_model.dart';
+import '../../controllers/emi_controllers.dart';
+import '../../controllers/lock_controllers.dart';
+import '../../models/emi_model.dart';
 
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
@@ -56,8 +57,18 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : emis.isEmpty
-          ? const Center(
-              child: Text("No EMIs found", style: TextStyle(fontSize: 18)),
+          ? Center(
+              child: Column(
+                children: [
+                  Text("No EMIs found", style: TextStyle(fontSize: 18)),
+                  TextButton(
+                    onPressed: () {
+                      context.go('/login');
+                    },
+                    child: Text('back'),
+                  ),
+                ],
+              ),
             )
           : RefreshIndicator(
               onRefresh: refresh,
@@ -109,11 +120,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       trailing: const Icon(Icons.arrow_forward_ios),
 
                       onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          "/emi-details",
-                          arguments: emi.id,
-                        );
+                        context.push("/emi-details", extra: emi.id);
                       },
                     ),
                   );
