@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/api/api_clients.dart';
+import 'kiosk_controllers.dart';
 
 class LockController {
   static final ApiClient api = ApiClient();
@@ -12,17 +13,19 @@ class LockController {
   /// Check immediately
   static Future<void> checkNow(BuildContext context) async {
     try {
-      if (!context.mounted) return;
-
       final response = await api.get("/device-lock/me");
 
       final bool locked = response.data["data"]["deviceLocked"] ?? false;
 
-      if (!context.mounted) return;
-
       if (locked) {
+        await KioskController.enableKiosk();
+
+        if (!context.mounted) return;
         context.go('/lock');
       } else {
+        await KioskController.disableKiosk();
+
+        if (!context.mounted) return;
         context.go('/client-home');
       }
     } catch (e) {
