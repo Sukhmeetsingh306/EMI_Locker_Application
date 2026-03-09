@@ -27,7 +27,11 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
     loadEmis();
 
     /// Start locker engine
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      /// Immediate lock check
+      await LockController.checkNow(context);
+
+      /// Start background monitoring
       LockController.startLockMonitor(context);
     });
   }
