@@ -1,23 +1,39 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../core/service/lock_service.dart';
+import 'package:go_router/go_router.dart';
+
+import '../core/api/api_clients.dart';
 
 class LockController {
-  static Timer? _timer;
+  static final ApiClient api = ApiClient();
 
-  static void startLockMonitor(BuildContext context) {
-    _timer?.cancel();
+  static Timer? timer;
 
-    _timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
-      final locked = await LockService.checkLockStatus();
+  /// Check immediately
+  static Future<void> checkNow(BuildContext context) async {
+    try {
+      final response = await api.get("/users/me");
+
+      final bool locked = response.data["data"]["deviceLocked"] ?? false;
 
       if (locked) {
-        Navigator.pushNamed(context, "/lock");
+        context.go('/lock');
       }
+    } catch (e) {
+      print("Lock check error: $e");
+    }
+  }
+
+  /// Start background monitoring
+  static void startLockMonitor(BuildContext context) {
+    timer?.cancel();
+
+    timer = Timer.periodic(const Duration(seconds: 30), (_) async {
+      await checkNow(context);
     });
   }
 
   static void stop() {
-    _timer?.cancel();
+    timer?.cancel();
   }
 }
