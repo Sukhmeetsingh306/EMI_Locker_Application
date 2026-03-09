@@ -69,14 +69,14 @@ class _LoginScreenState extends State<LoginScreen> {
         break;
 
       default:
-        context.go("/login");
+        context.push("/login");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(title: const Text("Login Screen"), centerTitle: true),
 
       body: Padding(
         padding: const EdgeInsets.all(20),
