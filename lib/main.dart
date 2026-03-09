@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'router/app_router.dart';
+import 'router/app_router.dart' as AppRouter;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
