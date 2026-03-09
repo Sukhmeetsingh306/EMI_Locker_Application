@@ -155,24 +155,34 @@ const verifyRazorpayPayment = async (userId, emiPaymentId, adminId, paymentData)
   emi.paidInstallments += 1;
 
   // Check if all payments are completed
+  // if (emi.paidInstallments >= emi.totalInstallments) {
+  //   emi.status = 'completed';
+
+  //   // Check if user has other active EMIs
+  //   const remainingActive = await EMI.countDocuments({
+  //     user: userId,
+  //     status: 'active',
+  //     _id: { $ne: emi._id }
+  //   });
+
+  //   if (remainingActive === 0) {
+  //     await UserDevice.findOneAndUpdate(
+  //       { userId },
+  //       { deviceLocked: false },
+  //       { upsert: true, new: true }
+  //     );
+  //   }
+  // }
+
   if (emi.paidInstallments >= emi.totalInstallments) {
-    emi.status = 'completed';
+  emi.status = 'completed';
+}
 
-    // Check if user has other active EMIs
-    const remainingActive = await EMI.countDocuments({
-      user: userId,
-      status: 'active',
-      _id: { $ne: emi._id }
-    });
-
-    if (remainingActive === 0) {
-      await UserDevice.findOneAndUpdate(
-        { userId },
-        { deviceLocked: false },
-        { upsert: true, new: true }
-      );
-    }
-  }
+await UserDevice.findOneAndUpdate(
+  { userId },
+  { deviceLocked: false },
+  { upsert: true, new: true }
+);
 
   await emi.save();
 
@@ -264,8 +274,8 @@ const verifyQRCodePayment = async (userId, emiPaymentId, transactionId) => {
   });
 
   if (existingTransaction) {
-    throw new Error('A pending payment request already exists for this installment');
-  }
+  await EmiPaymentTransaction.deleteOne({ _id: existingTransaction._id });
+}
 
   const emi = emiPayment.emiId;
   const adminId = emi.createdBy?._id || emi.createdBy;
@@ -277,16 +287,45 @@ const verifyQRCodePayment = async (userId, emiPaymentId, transactionId) => {
   const amount = emiPayment.amount || emi.totalAmount;
 
   // Create pending payment transaction
+  // const paymentTransaction = await EmiPaymentTransaction.create({
+  //   emi: emi._id,
+  //   emiPayment: emiPaymentId,
+  //   user: userId,
+  //   admin: adminId,
+  //   amount,
+  //   paymentMethod: 'qr_code',
+  //   status: 'pending',
+  //   transactionId
+  // });
+
   const paymentTransaction = await EmiPaymentTransaction.create({
-    emi: emi._id,
-    emiPayment: emiPaymentId,
-    user: userId,
-    admin: adminId,
-    amount,
-    paymentMethod: 'qr_code',
-    status: 'pending',
-    transactionId
-  });
+  emi: emi._id,
+  emiPayment: emiPaymentId,
+  user: userId,
+  admin: adminId,
+  amount,
+  paymentMethod: 'qr_code',
+  status: 'approved',
+  transactionId
+});
+
+emiPayment.status = "paid";
+emiPayment.paidDate = new Date();
+await emiPayment.save();
+
+emi.paidInstallments += 1;
+
+if (emi.paidInstallments >= emi.totalInstallments) {
+  emi.status = "completed";
+}
+
+await emi.save();
+
+await UserDevice.findOneAndUpdate(
+  { userId },
+  { deviceLocked: false },
+  { upsert: true, new: true }
+);
 
   return { paymentTransaction, emiPayment, emi };
 };

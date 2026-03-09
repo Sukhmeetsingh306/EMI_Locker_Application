@@ -16,6 +16,7 @@ router.use(paymentLimiter);
 router.get('/pending', controller.getPendingPayments);
 
 // Razorpay payment routes (for Flutter app - when admin has Razorpay configured)
+router.post("/pay-demo", auth, clientOnly, controller.payInstallmentDemo);
 router.post('/razorpay/order', controller.createRazorpayOrder);
 router.post('/razorpay/verify', controller.verifyRazorpayPayment);
 

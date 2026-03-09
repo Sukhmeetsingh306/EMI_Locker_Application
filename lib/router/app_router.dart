@@ -1,3 +1,5 @@
+import 'package:emi_locker/screen/details/pay_installement_screen.dart'
+    show PayInstallmentScreen;
 import 'package:go_router/go_router.dart';
 
 import '../screen/details/emi_detail_screen.dart';
@@ -32,6 +34,11 @@ final router = GoRouter(
         final emiId = state.extra as String;
         return EmiDetailsScreen(emiId: emiId);
       },
+    ),
+
+    GoRoute(
+      path: '/pay-installment',
+      builder: (context, state) => const PayInstallmentScreen(),
     ),
   ],
 );

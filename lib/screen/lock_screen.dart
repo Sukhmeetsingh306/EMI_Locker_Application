@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LockScreen extends StatelessWidget {
   const LockScreen({super.key});
@@ -11,7 +12,7 @@ class LockScreen extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Icon(Icons.lock, color: Colors.white, size: 100),
 
             SizedBox(height: 20),
@@ -31,6 +32,13 @@ class LockScreen extends StatelessWidget {
               "Your EMI payment is overdue.\nPlease complete payment to unlock the device.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                context.push("/pay-installment");
+              },
+              child: const Text("Pay Installment"),
             ),
           ],
         ),
