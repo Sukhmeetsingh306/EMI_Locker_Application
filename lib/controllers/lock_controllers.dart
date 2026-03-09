@@ -12,12 +12,18 @@ class LockController {
   /// Check immediately
   static Future<void> checkNow(BuildContext context) async {
     try {
-      final response = await api.get("/users/me");
+      if (!context.mounted) return;
+
+      final response = await api.get("/device-lock/me");
 
       final bool locked = response.data["data"]["deviceLocked"] ?? false;
 
+      if (!context.mounted) return;
+
       if (locked) {
         context.go('/lock');
+      } else {
+        context.go('/client-home');
       }
     } catch (e) {
       print("Lock check error: $e");
