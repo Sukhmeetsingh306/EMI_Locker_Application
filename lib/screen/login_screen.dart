@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/service/auth_service.dart';
+import '../core/storage/token_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  static String routePath() => "/login";
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -18,19 +21,22 @@ class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
 
   Future<void> login() async {
-    print("LOGIN BUTTON CLICKED");
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter email/mobile and password")),
+      );
+      return;
+    }
 
     setState(() {
       loading = true;
     });
 
     final success = await AuthService.login(
-      emailOrMobile: emailController.text,
-      password: passwordController.text,
+      emailOrMobile: emailController.text.trim(),
+      password: passwordController.text.trim(),
       role: selectedRole,
     );
-
-    print("LOGIN RESULT: $success");
 
     setState(() {
       loading = false;
@@ -41,17 +47,36 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
       ).showSnackBar(const SnackBar(content: Text("Login failed")));
       return;
-    } else {
-      print("Success");
     }
 
-    context.go("/client-home");
+    /// Fetch role from storage
+    final role = await TokenStorage.getRole();
+
+    if (!mounted) return;
+
+    // change push to go to prevent back navigation to login screen
+    switch (role) {
+      case "admin":
+        context.push("/admin-home");
+        break;
+
+      case "agent":
+        context.push("/agent-home");
+        break;
+
+      case "client":
+        context.push("/client-home");
+        break;
+
+      default:
+        context.push("/login");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(title: const Text("Login Screen"), centerTitle: true),
 
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -88,11 +113,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 30),
 
-            ElevatedButton(
-              onPressed: loading ? null : login,
-              child: loading
-                  ? const CircularProgressIndicator()
-                  : const Text("Login"),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: loading ? null : login,
+                child: loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Login"),
+              ),
             ),
           ],
         ),

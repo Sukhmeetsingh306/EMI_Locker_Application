@@ -5,10 +5,10 @@ import '../models/emi_model.dart';
 class EmiController {
   final ApiClient apiClient = ApiClient();
 
-  /// Get all EMIs for logged user
+  /// Get all EMIs
   Future<List<EmiModel>> getMyEmis() async {
     try {
-      final response = await apiClient.dio.get("/emis/my");
+      final response = await apiClient.get("/emis/my");
 
       final List data = response.data["data"];
 
@@ -19,10 +19,10 @@ class EmiController {
     }
   }
 
-  /// Get payment schedule
+  /// Get EMI payments
   Future<List<EmiPaymentModel>> getEmiPayments(String emiId) async {
     try {
-      final response = await apiClient.dio.get("/emis/$emiId/payments");
+      final response = await apiClient.get("/emis/my/$emiId/payments");
 
       final List data = response.data["data"];
 

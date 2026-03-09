@@ -23,25 +23,25 @@ class _SplashScreenState extends State<SplashScreen> {
     final role = await TokenStorage.getRole();
 
     if (token == null) {
-      context.go('/login');
+      context.push('/login');
       return;
     }
 
     switch (role) {
       case "admin":
-        context.go('/admin-home');
+        context.push('/admin-home');
         break;
 
       case "agent":
-        context.go('/agent-home');
+        context.push('/agent-home');
         break;
 
       case "client":
-        context.go('/client-home');
+        context.push('/client-home');
         break;
 
       default:
-        context.go('/login');
+        context.push('/login');
     }
   }
 

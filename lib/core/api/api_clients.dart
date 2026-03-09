@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../constants/api_constants.dart';
+import '../storage/token_storage.dart';
 
 class ApiClient {
   late final Dio dio;
@@ -11,6 +12,24 @@ class ApiClient {
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {"Content-Type": "application/json"},
+      ),
+    );
+
+    _addInterceptor();
+  }
+
+  void _addInterceptor() {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await TokenStorage.getToken();
+
+          if (token != null) {
+            options.headers["Authorization"] = "Bearer $token";
+          }
+
+          return handler.next(options);
+        },
       ),
     );
   }
