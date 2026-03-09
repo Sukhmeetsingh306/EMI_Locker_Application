@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.emi_locker">
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application
         android:label="emi_locker"
         android:name="${applicationName}"
@@ -44,6 +47,25 @@
             </intent-filter>
 
         </receiver>
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+            android:enabled="true"
+            android:exported="false"
+            tools:replace="android:enabled" />
+        <receiver
+            android:name=".LockReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.emi.LOCK_DEVICE"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".LockFirebaseService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="flutterEmbedding"
