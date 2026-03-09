@@ -7,6 +7,8 @@ import '../core/storage/token_storage.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  static String routePath() => "/login";
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -52,17 +54,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (!mounted) return;
 
+    // change push to go to prevent back navigation to login screen
     switch (role) {
       case "admin":
-        context.go("/admin-home");
+        context.push("/admin-home");
         break;
 
       case "agent":
-        context.go("/agent-home");
+        context.push("/agent-home");
         break;
 
       case "client":
-        context.go("/client-home");
+        context.push("/client-home");
         break;
 
       default:

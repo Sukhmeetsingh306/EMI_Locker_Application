@@ -7,6 +7,8 @@ import '../models/emi_model.dart';
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
 
+  static String routePath() => "/client-home";
+
   @override
   State<ClientHomeScreen> createState() => _ClientHomeScreenState();
 }

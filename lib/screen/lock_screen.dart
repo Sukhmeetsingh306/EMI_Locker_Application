@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class LockScreen extends StatelessWidget {
   const LockScreen({super.key});
+  static String routePath() => "/lock";
 
   @override
   Widget build(BuildContext context) {
