@@ -6,17 +6,30 @@ class LockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.red.shade700,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Icon(Icons.lock, size: 100, color: Colors.white),
+            Icon(Icons.lock, color: Colors.white, size: 100),
+
             SizedBox(height: 20),
+
             Text(
-              "DEVICE LOCKED\nPay EMI to unlock",
+              "DEVICE LOCKED",
+              style: TextStyle(
+                fontSize: 28,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            Text(
+              "Your EMI payment is overdue.\nPlease complete payment to unlock the device.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 22, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ],
         ),
