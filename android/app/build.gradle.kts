@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -37,8 +38,6 @@ android {
 
         release {
             signingConfig = signingConfigs.getByName("debug")
-
-            // Required pair
             isMinifyEnabled = false
             isShrinkResources = false
         }
@@ -47,4 +46,9 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.10.0"))
+    implementation("com.google.firebase:firebase-messaging")
 }
