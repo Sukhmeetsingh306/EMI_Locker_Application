@@ -23,6 +23,8 @@ class AuthService {
         body: {"emailOrMobile": emailOrMobile, "password": password},
       );
 
+      print("LOGIN RESPONSE: ${response.data}");
+
       if (response.statusCode == 200) {
         final token = response.data["data"]["token"];
 
