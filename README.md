@@ -13,6 +13,8 @@ When a user's payment becomes overdue, the backend triggers a device lock, forci
 
 This type of system is commonly used by financing companies, lending platforms, and EMI-based device purchase systems.
 
+---
+
 # Project Architecture
 
     Flutter Mobile App
@@ -33,6 +35,8 @@ This type of system is commonly used by financing companies, lending platforms, 
             │
             ▼
     Device Locked (Kiosk Mode)
+
+---
 
 # Technology Stack
 
@@ -59,6 +63,8 @@ Android Device Control
 Notifications
 
 - Firebase Cloud Messaging (FCM)
+
+---
 
 # Core Functional Modules
 
@@ -354,7 +360,7 @@ Possible enhancements:
 - Factory reset protection
 - Remote unlock dashboard
 
-<--/-->
+---
 
 # Author
 
