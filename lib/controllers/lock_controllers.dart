@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/api/api_clients.dart';
@@ -15,18 +16,31 @@ class LockController {
     try {
       final response = await api.get("/device-lock/me");
 
-      final bool locked = response.data["data"]["deviceLocked"] ?? false;
+      final data = response.data;
+
+      bool locked = false;
+
+      if (data != null &&
+          data["data"] != null &&
+          data["data"]["deviceLocked"] != null) {
+        locked = data["data"]["deviceLocked"];
+      }
+
+      print("LOCK STATUS FROM API: $locked");
 
       if (locked) {
+        const platform = MethodChannel("emi/lock");
+
+        await platform.invokeMethod("openLockScreen");
+
+        await Future.delayed(const Duration(milliseconds: 400));
+
         await KioskController.enableKiosk();
 
         if (!context.mounted) return;
         context.go('/lock');
       } else {
         await KioskController.disableKiosk();
-
-        if (!context.mounted) return;
-        context.go('/client-home');
       }
     } catch (e) {
       print("Lock check error: $e");
