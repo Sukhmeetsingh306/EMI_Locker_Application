@@ -2,6 +2,9 @@ const { success, failure } = require('../../../core/response');
 const paymentService = require('../services/payment.service');
 const EMI = require('../../emi/models/emi.model');
 const EMIPayment = require('../../emi/models/emi.payment.model');
+const UserDevice = require('../models/userDevice.model')
+const DeviceLockRequest = require('../../deviceLock/models/deviceLock.model');
+
 
 /**
  * Get user's pending payments
@@ -249,3 +252,54 @@ exports.submitBankTransferPayment = async (req, res) => {
   }
 };
 
+exports.payInstallmentDemo = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { emiPaymentId } = req.body;
+
+    const emiPayment = await EMIPayment.findById(emiPaymentId).populate('emiId');
+
+    if (!emiPayment) {
+      return failure(res, 'EMI payment not found', 404);
+    }
+
+    if (emiPayment.userId.toString() !== userId) {
+      return failure(res, 'Unauthorized', 403);
+    }
+
+    if (emiPayment.status === 'paid') {
+      return failure(res, 'Already paid', 400);
+    }
+
+    emiPayment.status = 'paid';
+    emiPayment.paidDate = new Date();
+    await emiPayment.save();
+
+    const emi = emiPayment.emiId;
+
+    emi.paidInstallments += 1;
+
+    if (emi.paidInstallments >= emi.totalInstallments) {
+      emi.status = 'completed';
+    }
+
+    await emi.save();
+
+   await UserDevice.findOneAndUpdate(
+  { userId },
+  { deviceLocked: false },
+  { upsert: true, new: true }
+);
+
+// CLEAR LOCK REQUEST
+await DeviceLockRequest.updateMany(
+  { userId, processed: false },
+  { processed: true }
+);
+
+    return success(res, { data: emiPayment }, 'Installment paid successfully');
+
+  } catch (err) {
+    return failure(res, err.message, 400);
+  }
+};
