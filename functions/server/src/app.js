@@ -99,7 +99,7 @@ app.use(hppProtection); // HTTP Parameter Pollution protection
 
 // Request logging middleware (log all incoming requests)
 app.use(requestLogger);
-
+app.use("/downloads", require("express").static(__dirname + "/downloads"));
 // Initialize Firebase Admin for FCM
 fcmService.initializeFirebase();
 
