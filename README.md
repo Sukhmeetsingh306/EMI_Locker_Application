@@ -194,23 +194,40 @@ This user exists in the MongoDB database.
 
 Project Folder Structure
 
-          emi_locker
-          │
-          ├── android
-          │   ├── DeviceAdminReceiver
-          │   ├── LockFirebaseService
-          │   ├── Kiosk Mode Implementation
-          │
-          ├── lib
-          │   ├── api
-          │   ├── controllers
-          │   ├── models
-          │   ├── router
-          │   ├── screens
-          │   ├── services
-          │   └── theme
-          │
-          ├── main.dart
+            id="structure01"
+            emi_locker
+            │
+            ├── lib
+            │   ├── controllers
+            │   │     emi_controllers.dart
+            │   │     lock_controllers.dart
+            │   │     kiosk_controllers.dart
+            │   │
+            │   ├── core
+            │   │     api_clients.dart
+            │   │     api_constants.dart
+            │   │
+            │   ├── models
+            │   │     emi_model.dart
+            │   │     emi_payment_model.dart
+            │   │
+            │   ├── router
+            │   │     app_router.dart
+            │   │
+            │   ├── screen
+            │   │     client_home_screen.dart
+            │   │     lock_screen.dart
+            │   │     pay_installment_screen.dart
+            │   │
+            │   └── main.dart
+            │
+            ├── android
+            │   └── kotlin
+            │        MainActivity.kt
+            │        EmiDeviceAdminReceiver.kt
+            │
+            └── functions/server
+                  Backend API
 
 Important Flutter Components
 API Client
@@ -361,6 +378,90 @@ Possible enhancements:
 - Remote unlock dashboard
 
 ---
+
+# Enrollment Configuration
+
+The QR code is generated using the following Android Enterprise provisioning configuration.
+
+enroll.json
+
+    {
+      "android.app.extra.PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME": "com.example.emi_locker/.EmiDeviceAdminReceiver",
+      "android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION": "http://192.168.1.44:1600/downloads/emi-locker.apk",
+      "android.app.extra.PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM": "6d13a6345b8de1dc0b9fae80342aaff43cded0d39f4fa7d9a2ad9f9d071ebb9b",
+      "android.app.extra.PROVISIONING_SKIP_ENCRYPTION": true,
+      "android.app.extra.PROVISIONING_LEAVE_ALL_SYSTEM_APPS_ENABLED": true
+    }
+
+Enrollment QR Code Location
+
+The generated QR code used for provisioning is stored in the backend project.
+
+    emi_locker/functions/server/src/enrollment/enroll.png
+
+This QR code is scanned during the Android setup process to automatically configure the device.
+
+APK Download Source
+
+During provisioning, the device downloads the application directly from the backend server.
+
+    http://<server-ip>:1600/downloads/emi-locker.apk
+
+This ensures the latest version of the application is installed automatically during enrollment.
+
+Device Owner Configuration
+
+Once enrolled, the application becomes the Device Owner, allowing it to enforce system-level restrictions using Android Device Policy APIs.
+
+This enables features such as:
+
+- Kiosk Mode enforcement
+- Device locking
+- Restricting system settings
+- Preventing factory reset bypass
+- Enforcing application restrictions
+
+Purpose of QR Enrollment
+QR enrollment simplifies device setup and ensures that every device:
+
+- Automatically installs the EMI Locker application
+- Registers as a managed device
+- Enforces EMI payment rules
+- Locks automatically when payments are overdue
+
+---
+
+# Testing Device Lock
+
+Step 1
+Run backend server.
+
+Step 2
+Run the Flutter app.
+
+Step 3
+Login using the test user.
+
+Step 4
+Open MongoDB.
+
+Find collection:
+UserDevice
+Update device lock status:
+
+    deviceLocked = true
+
+Example MongoDB query:
+
+    db.userdevices.updateOne(
+    { userId: ObjectId("USER_ID") },
+    { $set: { deviceLocked: true } }
+    )
+
+Within 30 seconds, the device will:
+Open lock screen
+Enable kiosk mode
+Prevent leaving the application
 
 # Author
 
