@@ -9,7 +9,7 @@ class DeviceService {
       final android = await deviceInfo.androidInfo;
 
       return {
-        "deviceId": android.id,
+        "androidId": android.id,
         "model": android.model,
         "osVersion": android.version.release,
       };
