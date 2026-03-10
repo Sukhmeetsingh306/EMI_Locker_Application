@@ -147,9 +147,7 @@ class LockScreen extends StatelessWidget {
 
                   // Footer / Support text
                   TextButton.icon(
-                    onPressed: () {
-                      // TODO: Add support action (e.g., dialer intent or show dialog)
-                    },
+                    onPressed: () {},
                     icon: const Icon(
                       Icons.support_agent,
                       color: Colors.white54,

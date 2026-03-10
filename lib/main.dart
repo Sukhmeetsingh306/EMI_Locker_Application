@@ -13,11 +13,9 @@ void callbackDispatcher() {
       try {
         final dio = Dio();
 
-        final response = await dio.get(
-          "http://YOUR_SERVER_IP:1600/api/device-lock/me",
-        );
+        final response = await dio.get("/device-lock/me");
 
-        final locked = response.data["data"]["data"]["deviceLocked"];
+        final locked = response.data["data"]["deviceLocked"];
 
         if (locked == true) {
           print("Device should be locked");

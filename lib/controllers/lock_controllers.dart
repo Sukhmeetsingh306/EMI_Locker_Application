@@ -33,9 +33,9 @@ class LockController {
 
         await platform.invokeMethod("openLockScreen");
 
-        await Future.delayed(const Duration(milliseconds: 400));
-
-        await KioskController.enableKiosk();
+        Future.delayed(const Duration(milliseconds: 800), () async {
+          await KioskController.enableKiosk();
+        });
 
         if (!context.mounted) return;
         context.go('/lock');

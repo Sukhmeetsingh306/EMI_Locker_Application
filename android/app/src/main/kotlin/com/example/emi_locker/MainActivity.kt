@@ -1,5 +1,6 @@
 package com.example.emi_locker
 
+import android.app.ActivityManager
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -16,8 +17,8 @@ class MainActivity : FlutterActivity() {
   private val KIOSK_CHANNEL = "emi/kiosk"
 
   private fun isInLockTaskMode(): Boolean {
-    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
-    return activityManager.lockTaskModeState != android.app.ActivityManager.LOCK_TASK_MODE_NONE
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    return activityManager.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_NONE
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,10 +66,7 @@ class MainActivity : FlutterActivity() {
       when (call.method) {
         "enableKiosk" -> {
 
-          val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-          val component = ComponentName(this, EmiDeviceAdminReceiver::class.java)
-
-          if (dpm.isDeviceOwnerApp(packageName) && !isInLockTaskMode()) {
+          if (!isInLockTaskMode()) {
             startLockTask()
           }
 
@@ -83,12 +81,25 @@ class MainActivity : FlutterActivity() {
     }
   }
 
-  /// Prevent leaving the app while kiosk is active
+  /// Enforce kiosk when app resumes
+  override fun onResume() {
+    super.onResume()
+
+    val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+
+    if (dpm.isDeviceOwnerApp(packageName)) {
+
+      if (!isInLockTaskMode()) {
+        startLockTask()
+      }
+    }
+  }
+
+  /// Prevent leaving app when kiosk active
   override fun onPause() {
     super.onPause()
 
     val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-    val component = ComponentName(this, EmiDeviceAdminReceiver::class.java)
 
     if (dpm.isDeviceOwnerApp(packageName) && isInLockTaskMode()) {
 
