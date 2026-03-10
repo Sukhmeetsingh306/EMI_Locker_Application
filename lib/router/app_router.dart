@@ -2,7 +2,9 @@ import 'package:emi_locker/screen/details/pay_installement_screen.dart'
     show PayInstallmentScreen;
 import 'package:go_router/go_router.dart';
 
+import '../models/emi_payment_model.dart';
 import '../screen/details/emi_detail_screen.dart';
+import '../screen/details/installement_detail_screen.dart';
 import '../screen/lock_screen.dart';
 import '../screen/login_screen.dart';
 import '../screen/splash_screen.dart';
@@ -39,6 +41,13 @@ final router = GoRouter(
     GoRoute(
       path: '/pay-installment',
       builder: (context, state) => const PayInstallmentScreen(),
+    ),
+    GoRoute(
+      path: "/installment-detail",
+      builder: (context, state) {
+        final payment = state.extra as EmiPaymentModel;
+        return InstallmentDetailScreen(payment: payment);
+      },
     ),
   ],
 );
