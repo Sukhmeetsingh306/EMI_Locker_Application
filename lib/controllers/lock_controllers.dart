@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/api/api_clients.dart';
+import '../router/app_router.dart';
 import 'kiosk_controllers.dart';
 
 class LockController {
@@ -30,17 +31,17 @@ class LockController {
 
       if (locked) {
         const platform = MethodChannel("emi/lock");
-
         await platform.invokeMethod("openLockScreen");
-
-        Future.delayed(const Duration(milliseconds: 800), () async {
-          await KioskController.enableKiosk();
-        });
+        await Future.delayed(const Duration(milliseconds: 400));
+        await KioskController.enableKiosk();
 
         if (!context.mounted) return;
-        context.go('/lock');
+        rootNavigatorKey.currentContext?.go('/lock');
       } else {
         await KioskController.disableKiosk();
+
+        if (!context.mounted) return;
+        rootNavigatorKey.currentContext?.go('/client-home');
       }
     } catch (e) {
       print("Lock check error: $e");

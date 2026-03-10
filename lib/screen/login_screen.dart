@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/service/auth_service.dart';
 import '../core/storage/token_storage.dart';
+import '../theme/color_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,14 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String selectedRole = "client";
   bool loading = false;
   bool _obscurePassword = true; // Added for password visibility toggle
-
-  // Premium Fintech Color Scheme
-  static const Color primaryColor = Color(0xFF0F172A); // Deep Slate/Navy
-  static const Color accentColor = Color(0xFF3B82F6); // Trustworthy Blue
-  static const Color surfaceColor = Color(0xFFF1F5F9); // Cool Off-White
-  static const Color cardColor = Colors.white;
-  static const Color textPrimary = Color(0xFF1E293B);
-  static const Color textSecondary = Color(0xFF64748B);
 
   @override
   void dispose() {
@@ -105,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: surfaceColor,
+      backgroundColor: ColorTheme.color.surfaceColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -121,34 +114,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.1),
+                    color: ColorTheme.color.accentColor.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.security_rounded,
                     size: 64,
-                    color: accentColor,
+                    color: ColorTheme.color.accentColor,
                   ),
                 ),
 
                 const SizedBox(height: 32),
 
                 // Welcome Text
-                const Text(
+                Text(
                   "Secure Login",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: primaryColor,
+                    color: ColorTheme.color.primaryColor,
                     letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   "Enter your credentials to access your account",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: textSecondary),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: ColorTheme.color.textSecondary,
+                  ),
                 ),
 
                 const SizedBox(height: 40),
@@ -157,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: cardColor,
+                    color: ColorTheme.color.whiteColor,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
@@ -192,13 +188,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(
-                              color: accentColor,
+                            borderSide: BorderSide(
+                              color: ColorTheme.color.accentColor,
                               width: 2,
                             ),
                           ),
                           filled: true,
-                          fillColor: surfaceColor.withOpacity(0.5),
+                          fillColor: ColorTheme.color.surfaceColor.withOpacity(
+                            0.5,
+                          ),
                         ),
                       ),
 
@@ -218,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _obscurePassword
                                   ? Icons.visibility_off
                                   : Icons.visibility,
-                              color: textSecondary,
+                              color: ColorTheme.color.textSecondary,
                             ),
                             onPressed: () {
                               setState(() {
@@ -236,13 +234,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(
-                              color: accentColor,
+                            borderSide: BorderSide(
+                              color: ColorTheme.color.accentColor,
                               width: 2,
                             ),
                           ),
                           filled: true,
-                          fillColor: surfaceColor.withOpacity(0.5),
+                          fillColor: ColorTheme.color.surfaceColor.withOpacity(
+                            0.5,
+                          ),
                         ),
                       ),
 
@@ -255,10 +255,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: loading ? null : login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            disabledBackgroundColor: primaryColor.withOpacity(
-                              0.6,
-                            ),
+                            backgroundColor: ColorTheme.color.primaryColor,
+                            disabledBackgroundColor: ColorTheme
+                                .color
+                                .primaryColor
+                                .withOpacity(0.6),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -299,7 +300,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildRoleSelector() {
     return Container(
       decoration: BoxDecoration(
-        color: surfaceColor,
+        color: ColorTheme.color.surfaceColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -307,16 +308,16 @@ class _LoginScreenState extends State<LoginScreen> {
         child: DropdownButton<String>(
           value: selectedRole,
           isExpanded: true,
-          icon: const Padding(
+          icon: Padding(
             padding: EdgeInsets.only(right: 16.0),
             child: Icon(
               Icons.keyboard_arrow_down_rounded,
-              color: textSecondary,
+              color: ColorTheme.color.textSecondary,
             ),
           ),
-          dropdownColor: cardColor,
+          dropdownColor: ColorTheme.color.whiteColor,
           borderRadius: BorderRadius.circular(16),
-          items: const [
+          items: [
             DropdownMenuItem(
               value: "client",
               child: Padding(
@@ -326,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Icon(
                       Icons.account_balance_wallet_outlined,
                       size: 20,
-                      color: textSecondary,
+                      color: ColorTheme.color.textSecondary,
                     ),
                     SizedBox(width: 12),
                     Text(
@@ -346,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Icon(
                       Icons.support_agent_outlined,
                       size: 20,
-                      color: textSecondary,
+                      color: ColorTheme.color.textSecondary,
                     ),
                     SizedBox(width: 12),
                     Text(
@@ -366,7 +367,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Icon(
                       Icons.admin_panel_settings_outlined,
                       size: 20,
-                      color: textSecondary,
+                      color: ColorTheme.color.textSecondary,
                     ),
                     SizedBox(width: 12),
                     Text(

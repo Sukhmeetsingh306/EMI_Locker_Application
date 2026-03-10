@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:workmanager/workmanager.dart';
-import 'package:dio/dio.dart';
 
+import 'core/api/api_clients.dart';
 import 'router/app_router.dart' as AppRouter;
 
 const String lockCheckTask = "lockCheckTask";
 
 /// Background worker
+@pragma('vm:entry-point')
 void callbackDispatcher() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   Workmanager().executeTask((task, inputData) async {
     if (task == lockCheckTask) {
       try {
-        final dio = Dio();
-
-        final response = await dio.get("/device-lock/me");
-
+        final api = ApiClient();
+        final response = await api.get("/device-lock/me");
         final locked = response.data["data"]["deviceLocked"];
-
         if (locked == true) {
-          print("Device should be locked");
-
-          // Later we trigger kiosk + lock screen
+          const platform = MethodChannel("emi/lock");
+          await platform.invokeMethod("openLockScreen");
         }
       } catch (e) {
         print("Background lock check failed: $e");

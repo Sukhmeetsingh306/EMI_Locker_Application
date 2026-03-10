@@ -1,5 +1,6 @@
 import 'package:emi_locker/screen/details/pay_installement_screen.dart'
     show PayInstallmentScreen;
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/emi_payment_model.dart';
@@ -11,7 +12,10 @@ import '../screen/splash_screen.dart';
 import '../screen/users/admin_home_screen.dart';
 import '../screen/users/client_home_screen.dart';
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final router = GoRouter(
+  navigatorKey: rootNavigatorKey,
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),

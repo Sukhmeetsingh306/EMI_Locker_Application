@@ -9,23 +9,28 @@ import com.google.firebase.messaging.RemoteMessage
 
 class LockFirebaseService : FirebaseMessagingService() {
 
-    override fun onMessageReceived(message: RemoteMessage) {
+  override fun onMessageReceived(message: RemoteMessage) {
 
-        val action = message.data["action"]
+    val action = message.data["action"]
 
-        if (action == "LOCK_DEVICE") {
+    if (action == "LOCK_DEVICE") {
 
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+      val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+      val component = ComponentName(this, EmiDeviceAdminReceiver::class.java)
 
-            startActivity(intent)
+      if (dpm.isDeviceOwnerApp(packageName)) {
 
-            val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val component = ComponentName(this, EmiDeviceAdminReceiver::class.java)
+        // Start the app
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
 
-            if (dpm.isDeviceOwnerApp(packageName)) {
-                // kiosk will activate via MainActivity.onResume()
-            }
-        }
+        // Activate kiosk
+        dpm.setLockTaskPackages(component, arrayOf(packageName))
+
+        // Optional hard lock
+        dpm.lockNow()
+      }
     }
+  }
 }

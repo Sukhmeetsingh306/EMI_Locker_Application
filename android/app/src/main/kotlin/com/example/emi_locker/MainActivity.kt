@@ -79,6 +79,21 @@ class MainActivity : FlutterActivity() {
         else -> result.notImplemented()
       }
     }
+
+    MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "emi/broadcast")
+            .setMethodCallHandler { call, result ->
+              if (call.method == "sendLockBroadcast") {
+
+                val intent = Intent("com.emi.LOCK_DEVICE")
+                intent.putExtra("action", "LOCK_DEVICE")
+
+                sendBroadcast(intent)
+
+                result.success(true)
+              } else {
+                result.notImplemented()
+              }
+            }
   }
 
   /// Enforce kiosk when app resumes
