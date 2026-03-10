@@ -11,6 +11,8 @@ const { generalLimiter, speedLimiter } = require('./middlewares/rateLimiter');
 const { requestTimeout, inputSizeValidation, redosProtection } = require('./middlewares/dosProtection');
 const env = require('./config/env');
 const fcmService = require('./utils/fcm');
+const deviceRoutes = require("./features/users/routes/device_route");
+
 
 const app = express();
 
@@ -100,6 +102,7 @@ app.use(hppProtection); // HTTP Parameter Pollution protection
 // Request logging middleware (log all incoming requests)
 app.use(requestLogger);
 app.use("/downloads", require("express").static(__dirname + "/downloads"));
+app.use("/api/device", deviceRoutes);
 // Initialize Firebase Admin for FCM
 fcmService.initializeFirebase();
 
