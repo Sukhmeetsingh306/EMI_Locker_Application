@@ -14,4 +14,10 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
 # EMI_Locker_Application
+
+for enrollment of the device run this cmd
+shasum -a 256 functions/server/src/downloads/emi-locker.apk
+and add the output in the enroll.json
+in package checksum
